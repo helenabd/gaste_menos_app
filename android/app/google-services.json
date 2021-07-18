@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "694005940766",
+    "project_id": "gaste-menos-6807f",
+    "storage_bucket": "gaste-menos-6807f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694005940766:android:62676afd47d3029871e40f",
+        "android_client_info": {
+          "package_name": "com.example.gaste_menos_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694005940766-lbnsmu11n0khhr6kclsn4i96se7maqo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPCY5bASgvcL2NhiBwM9Rj8xZfOE0bzWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694005940766-lbnsmu11n0khhr6kclsn4i96se7maqo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
