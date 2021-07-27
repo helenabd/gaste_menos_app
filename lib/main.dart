@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gaste Menos',
       theme: gasteMenosTheme(),
+      // home: HomeScreen(),
       home: HomeScreen(),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/ui/design/images.dart';
+import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
 import '../../widgets/cupertino_picker_extended.dart' as CupertinoExtended;
 
 class HomeScreen extends StatefulWidget {
@@ -150,10 +151,46 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  Container(
+                    height: 60,
+                    width: 60,
+                    child: ClipOval(
+                      child: Material(
+                        color: Colors.purple,
+                        child: InkWell(
+                            onTap: () => _startAddNewTransaction(context),
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 42,
+                            )),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           )),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.purple,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home')
+        ],
+      ),
+    );
+  }
+
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
     );
   }
 }
