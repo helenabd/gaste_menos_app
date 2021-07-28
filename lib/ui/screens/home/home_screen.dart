@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/images.dart';
 import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
+import 'package:gaste_menos_app/ui/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/cupertino_picker_extended.dart' as CupertinoExtended;
 
 class HomeScreen extends StatefulWidget {
@@ -9,6 +12,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showAlertDialog(
+      context,
+      title: 'Logout',
+      content: 'Are you sure that you want to logout?',
+      defaultActionText: 'Logout',
+      cancelActionText: 'Cancel',
+    );
+
+    if (didRequestSignOut == true) {
+      _signOut(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List monthList = [
@@ -34,6 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+                  InkWell(
+                    child: Text('Logout'),
+                    onTap: () => _confirmSignOut(context),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
