@@ -9,6 +9,11 @@ class InputWithIcon extends StatefulWidget {
     @required this.textInputType,
     @required this.onChanged,
     @required this.icon,
+    @required this.controller,
+    @required this.focusNode,
+    @required this.errorText,
+    @required this.onEditingComplete,
+    this.textInputAction = TextInputAction.next,
     this.isPassword = false,
   }) : super(key: key);
 
@@ -17,6 +22,11 @@ class InputWithIcon extends StatefulWidget {
   final Function onChanged;
   final Icon icon;
   final bool isPassword;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final String errorText;
+  final TextInputAction textInputAction;
+  final Function onEditingComplete;
 
   @override
   _InputWithIconState createState() => _InputWithIconState();
@@ -49,10 +59,13 @@ class _InputWithIconState extends State<InputWithIcon> {
     }
     return Container(
       child: TextFormField(
+        controller: widget.controller,
+        focusNode: widget.focusNode,
         cursorColor: kColorPurple,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           hintText: widget.hintText,
+          errorText: widget.errorText,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(),
@@ -66,10 +79,13 @@ class _InputWithIconState extends State<InputWithIcon> {
           ),
           suffixIcon: suffix,
         ),
+        autocorrect: false,
         keyboardType: widget.textInputType,
+        textInputAction: widget.textInputAction,
         onChanged: widget.onChanged,
         obscureText: widget.isPassword ? !_passwordVisible : _passwordVisible,
         obscuringCharacter: "*",
+        onEditingComplete: widget.onEditingComplete,
       ),
     );
   }

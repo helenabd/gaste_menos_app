@@ -16,12 +16,26 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundDisabledColor = Colors.grey;
     return Container(
       height: 56,
       width: totalWidth,
       child: TextButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(kColorPurple),
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed)) return kColorPurple;
+            if (states.contains(MaterialState.disabled)) {
+              Color disabledColor = backgroundDisabledColor;
+              if (backgroundDisabledColor == null) {
+                disabledColor = kColorPurple.withOpacity(0.5);
+              }
+
+              return disabledColor;
+            }
+
+            return kColorPurple;
+          }),
           overlayColor: MaterialStateProperty.all<Color>(kColorDarkPurple),
         ),
         child: Text(

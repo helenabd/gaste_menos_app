@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:gaste_menos_app/domain/domain.dart';
 
 import '../../../ui.dart';
 
 class LoginButton extends StatelessWidget {
+  final String text;
+  final Function onPressed;
+
   const LoginButton({
     Key key,
-    @required this.totalWidth,
+    @required this.text,
+    @required this.onPressed,
   }) : super(key: key);
-
-  final double totalWidth;
 
   @override
   Widget build(BuildContext context) {
+    final totalWidth = Utils.totalWidth(context: context);
+
     return Container(
         child: Button(
       totalWidth: totalWidth,
-      buttonText: 'Entrar',
-      onPressed: () {},
+      buttonText: text,
+      onPressed: onPressed,
     ));
   }
 }
