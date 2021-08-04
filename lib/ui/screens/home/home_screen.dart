@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/images.dart';
 import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
@@ -33,6 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
     if (didRequestSignOut == true) {
       _signOut(context);
     }
+  }
+
+  Future<void> _createDesp(BuildContext context) async {
+    final database = Provider.of<Database>(context, listen: false);
+    await database.createDesp(Desp(
+      categoria: 'Supermercado',
+      data: DateTime.now(),
+      nome: 'Brasil',
+      valor: 23.45,
+    ));
   }
 
   @override
@@ -188,7 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Material(
                         color: Colors.purple,
                         child: InkWell(
-                            onTap: () => _startAddNewTransaction(context),
+                            onTap: () => _createDesp(context),
+                            // onTap: () => _startAddNewTransaction(context),
                             child: Icon(
                               Icons.add,
                               color: Colors.white,
