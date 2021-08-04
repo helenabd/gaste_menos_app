@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,14 @@ class MyApp extends StatelessWidget {
         theme: gasteMenosTheme(),
         // home: HomeScreen(),
         home: LandingScreen(),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('pt', 'BR'),
+          const Locale('en'),
+        ],
       ),
     );
   }
