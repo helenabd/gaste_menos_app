@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 
 import 'package:gaste_menos_app/services/services.dart';
+import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class DespesasScreen extends StatefulWidget {
@@ -29,8 +30,15 @@ class _DespesasScreenState extends State<DespesasScreen> {
 
   String _name;
   String _category;
-  DateTime _date = DateTime.now();
+  DateTime _date;
   double _value;
+
+  @override
+  void initState() {
+    super.initState();
+    final start = DateTime.now();
+    _date = DateTime(start.year, start.month, start.day);
+  }
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -43,8 +51,10 @@ class _DespesasScreenState extends State<DespesasScreen> {
 
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
+      final data = DateTime(
+          _date.year, _date.month, _date.day, _date.hour, _date.minute);
       final desp =
-          Desp(categoria: _category, data: _date, nome: _name, valor: _value);
+          Desp(categoria: _category, data: data, nome: _name, valor: _value);
       await widget.database.createDesp(desp);
       Navigator.of(context).pop();
     }
@@ -89,18 +99,34 @@ class _DespesasScreenState extends State<DespesasScreen> {
                             : 'Descrição não pode ser vazia',
                         onSaved: (newValue) => _name = newValue,
                       ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: 'Valor'),
+                              onSaved: (newValue) =>
+                                  _value = double.tryParse(newValue) ?? 0,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          SizedBox(width: 12.0),
+                          Expanded(
+                            child: DateTimePicker(
+                              labelText: 'Data',
+                              selectedDate: _date,
+                              selectDate: (date) =>
+                                  setState(() => _date = date),
+                            ),
+                          )
+                        ],
+                      ),
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Categoria'),
                         validator: (value) => value.isNotEmpty
                             ? null
                             : 'Categoria não pode ser vazia',
                         onSaved: (newValue) => _category = newValue,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'Valor'),
-                        onSaved: (newValue) =>
-                            _value = double.tryParse(newValue) ?? 0,
-                        keyboardType: TextInputType.number,
                       ),
                     ],
                   ),

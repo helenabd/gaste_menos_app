@@ -18,7 +18,7 @@ class Utils {
   }
 
   static String date(DateTime date) {
-    return DateFormat.yMMMd().format(date);
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 
   static String dayOfWeek(DateTime date) {
