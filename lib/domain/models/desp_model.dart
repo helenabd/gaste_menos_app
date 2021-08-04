@@ -29,6 +29,7 @@ class Desp {
     return Desp(
       categoria: map['categoria'],
       data: DateTime.fromMillisecondsSinceEpoch(map['data']),
+      // data: DateTime.tryParse(map['data']),
       nome: map['nome'],
       valor: map['valor'],
     );

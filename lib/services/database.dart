@@ -9,6 +9,8 @@ abstract class Database {
   Stream<List<Desp>> despStream();
 }
 
+String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
+
 class FirestoreDatabase implements Database {
   final String uid;
   final _service = FirestoreService.instance;
@@ -17,7 +19,7 @@ class FirestoreDatabase implements Database {
   }) : assert(uid != null);
 
   Future<void> createDesp(Desp desp) => _service.setData(
-        path: APIPath.desp(uid, 'desp_abc'),
+        path: APIPath.desp(uid, documentIdFromCurrentDate()),
         data: desp.toMap(),
       );
 

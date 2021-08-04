@@ -4,6 +4,7 @@ import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/images.dart';
 import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
+import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/cupertino_picker_extended.dart' as CupertinoExtended;
@@ -37,23 +38,23 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _createDesp(BuildContext context) async {
-    try {
-      final database = Provider.of<Database>(context, listen: false);
-      await database.createDesp(Desp(
-        categoria: 'Supermercado',
-        data: DateTime.now(),
-        nome: 'Brasil',
-        valor: 23.45,
-      ));
-    } on FirebaseException catch (e) {
-      showExceptionAlertDialog(
-        context,
-        title: 'Operação falha',
-        exception: e,
-      );
-    }
-  }
+  // Future<void> _createDesp(BuildContext context) async {
+  //   try {
+  //     final database = Provider.of<Database>(context, listen: false);
+  //     await database.createDesp(Desp(
+  //       categoria: 'Supermercado',
+  //       data: DateTime.now(),
+  //       nome: 'Brasil',
+  //       valor: 23.45,
+  //     ));
+  //   } on FirebaseException catch (e) {
+  //     showExceptionAlertDialog(
+  //       context,
+  //       title: 'Operação falha',
+  //       exception: e,
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Material(
                         color: Colors.purple,
                         child: InkWell(
-                            onTap: () => _createDesp(context),
+                            onTap: () => DespesasScreen.show(context),
                             // onTap: () => _startAddNewTransaction(context),
                             child: Icon(
                               Icons.add,
@@ -298,7 +299,7 @@ class _DatePickerState extends State<DatePicker> {
   }
 }
 
-class Avatar extends StatelessWidget {
+/*class Avatar extends StatelessWidget {
   const Avatar({
     Key key,
   }) : super(key: key);
@@ -319,4 +320,4 @@ class Avatar extends StatelessWidget {
       ),
     );
   }
-}
+}*/
