@@ -17,7 +17,10 @@ class LandingScreen extends StatelessWidget {
           if (user == null) {
             return LoginScreen.create(context);
           }
-          return HomeScreen();
+          return Provider<Database>(
+            create: (_) => FirestoreDatabase(uid: user.uid),
+            child: HomeScreen(),
+          );
         }
         return Scaffold(
           body: Center(
