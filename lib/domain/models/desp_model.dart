@@ -23,6 +23,9 @@ class Desp {
   }
 
   factory Desp.fromMap(Map<String, dynamic> map) {
+    if (map == null) {
+      return null;
+    }
     return Desp(
       categoria: map['categoria'],
       data: DateTime.fromMillisecondsSinceEpoch(map['data']),

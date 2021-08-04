@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
@@ -37,17 +38,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _createDesp(BuildContext context) async {
-    final database = Provider.of<Database>(context, listen: false);
-    await database.createDesp(Desp(
-      categoria: 'Supermercado',
-      data: DateTime.now(),
-      nome: 'Brasil',
-      valor: 23.45,
-    ));
+    try {
+      final database = Provider.of<Database>(context, listen: false);
+      await database.createDesp(Desp(
+        categoria: 'Supermercado',
+        data: DateTime.now(),
+        nome: 'Brasil',
+        valor: 23.45,
+      ));
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Operação falha',
+        exception: e,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
     List monthList = [
       'Jan',
       'Fev',
@@ -75,16 +85,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('Logout'),
                     onTap: () => _confirmSignOut(context),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Avatar(),
-                      Avatar(),
-                      Avatar(),
-                      Avatar(),
-                    ],
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //   children: [
+                  //     Avatar(),
+                  //     Avatar(),
+                  //     Avatar(),
+                  //     Avatar(),
+                  //   ],
+                  // ),
+                  Container(
+                    height: 300,
+                    child: StreamBuilder<List<Desp>>(
+                        stream: database.despStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final desp = snapshot.data;
+                            final children =
+                                desp.map((des) => Text(des.nome)).toList();
+                            return ListView(
+                              children: children,
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Some error occurred'),
+                            );
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        }),
                   ),
-                  Text('Olá Maria'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -104,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Container(
+                  /*Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       // color: Colors.purple,
@@ -150,8 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                  ),
-                  Container(
+                  ),*/
+                  /*Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       // color: Colors.purple,
@@ -191,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                   Container(
                     height: 60,
                     width: 60,
