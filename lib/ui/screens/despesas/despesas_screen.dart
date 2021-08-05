@@ -125,13 +125,6 @@ class _DespesasScreenState extends State<DespesasScreen> {
                           )
                         ],
                       ),
-                      /*TextFormField(
-                        decoration: InputDecoration(labelText: 'Categoria'),
-                        validator: (value) => value.isNotEmpty
-                            ? null
-                            : 'Categoria não pode ser vazia',
-                        onSaved: (newValue) => _category = newValue,
-                      ),*/
                       SizedBox(
                         height: 20,
                       ),
