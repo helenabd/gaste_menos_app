@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gaste_menos_app/domain/domain.dart';
-
-import 'package:gaste_menos_app/services/services.dart';
-import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+
+import 'package:gaste_menos_app/domain/domain.dart';
+import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
+import 'package:gaste_menos_app/services/services.dart';
+import 'package:gaste_menos_app/ui/design/design.dart';
+import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 
 class DespesasScreen extends StatefulWidget {
   final Database database;
@@ -27,6 +29,7 @@ class DespesasScreen extends StatefulWidget {
 
 class _DespesasScreenState extends State<DespesasScreen> {
   final _formKey = GlobalKey<FormState>();
+  final CategoryIconService _categoryIconService = CategoryIconService();
 
   String _name;
   String _category;
@@ -62,6 +65,7 @@ class _DespesasScreenState extends State<DespesasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double totalHeight = Utils.totalHeight(context: context);
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -121,12 +125,74 @@ class _DespesasScreenState extends State<DespesasScreen> {
                           )
                         ],
                       ),
-                      TextFormField(
+                      /*TextFormField(
                         decoration: InputDecoration(labelText: 'Categoria'),
                         validator: (value) => value.isNotEmpty
                             ? null
                             : 'Categoria não pode ser vazia',
                         onSaved: (newValue) => _category = newValue,
+                      ),*/
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Categorias',
+                        style: TextStyle(color: Colors.grey[800], fontSize: 14),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: totalHeight * 0.52,
+                        child: GridView.count(
+                          primary: false,
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 16,
+                          crossAxisCount: 3,
+                          children: _categoryIconService.expenseList
+                              .map((category) => InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _category = category.name;
+                                      });
+                                    },
+                                    overlayColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Theme.of(context).primaryColor),
+                                    child: Container(
+                                      // padding: EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Icon(
+                                            category.icon,
+                                            size: 20,
+                                            color: (category.name == _category)
+                                                ? kColorPurple
+                                                : Colors.grey,
+                                          ),
+                                          Text(
+                                            category.name,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color:
+                                                    (category.name == _category)
+                                                        ? kColorPurple
+                                                        : Colors.black,
+                                                fontWeight:
+                                                    (category.name == _category)
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                       ),
                     ],
                   ),
