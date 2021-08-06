@@ -23,11 +23,11 @@ class CategoryIconService {
   };
   //* SECOND : INCOME LIST
   final incomeList = {
-    Category(0, "Salary", FontAwesomeIcons.wallet, Colors.green),
-    Category(1, "Awards", FontAwesomeIcons.moneyCheck, Colors.amber),
-    Category(2, "Grants", FontAwesomeIcons.gifts, Colors.lightGreen),
-    Category(3, "Rental", FontAwesomeIcons.houseUser, Colors.yellow),
-    Category(4, "Investment", FontAwesomeIcons.piggyBank, Colors.cyanAccent),
-    Category(5, "Lottery", FontAwesomeIcons.dice, Colors.deepOrange),
+    Category(0, "Salário", FontAwesomeIcons.wallet, Colors.green),
+    Category(1, "Prêmio", FontAwesomeIcons.moneyCheck, Colors.amber),
+    Category(2, "Bolsa", FontAwesomeIcons.gifts, Colors.lightGreen),
+    Category(3, "Aluguel", FontAwesomeIcons.houseUser, Colors.yellow),
+    Category(4, "Investimento", FontAwesomeIcons.piggyBank, Colors.cyanAccent),
+    Category(5, "Loteria", FontAwesomeIcons.dice, Colors.deepOrange),
   };
 }

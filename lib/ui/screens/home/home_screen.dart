@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
+import 'package:gaste_menos_app/ui/screens/ganhos/ganhos_screen.dart';
 import 'package:gaste_menos_app/ui/screens/login/components/logo.dart';
 import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
@@ -194,7 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Material(
                             color: Colors.purple,
                             child: InkWell(
-                                onTap: () {},
+                                onTap: () => GanhosScreen.show(context,
+                                    database: database),
                                 child: Icon(
                                   Icons.add,
                                   color: Colors.white,

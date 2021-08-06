@@ -7,32 +7,32 @@ import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 
-class DespesasScreen extends StatefulWidget {
+class GanhosScreen extends StatefulWidget {
   final Database database;
-  final Desp desp;
+  final Ganho ganho;
 
-  const DespesasScreen({
+  const GanhosScreen({
     Key key,
     @required this.database,
-    this.desp,
+    this.ganho,
   }) : super(key: key);
 
   static Future<void> show(BuildContext context,
-      {Database database, Desp desp}) async {
+      {Database database, Ganho ganho}) async {
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DespesasScreen(
+      builder: (context) => GanhosScreen(
         database: database,
-        desp: desp,
+        ganho: ganho,
       ),
       fullscreenDialog: true,
     ));
   }
 
   @override
-  _DespesasScreenState createState() => _DespesasScreenState();
+  _GanhosScreenState createState() => _GanhosScreenState();
 }
 
-class _DespesasScreenState extends State<DespesasScreen> {
+class _GanhosScreenState extends State<GanhosScreen> {
   final _formKey = GlobalKey<FormState>();
   final CategoryIconService _categoryIconService = CategoryIconService();
 
@@ -46,11 +46,11 @@ class _DespesasScreenState extends State<DespesasScreen> {
     super.initState();
     final start = DateTime.now();
     _date = DateTime(start.year, start.month, start.day);
-    if (widget.desp != null) {
-      _name = widget.desp.nome;
-      _category = widget.desp.categoria;
-      _date = widget.desp.data;
-      _value = widget.desp.valor;
+    if (widget.ganho != null) {
+      _name = widget.ganho.nome;
+      _category = widget.ganho.categoria;
+      _date = widget.ganho.data;
+      _value = widget.ganho.valor;
     }
   }
 
@@ -68,14 +68,14 @@ class _DespesasScreenState extends State<DespesasScreen> {
       try {
         final data = DateTime(
             _date.year, _date.month, _date.day, _date.hour, _date.minute);
-        final id = widget.desp?.id ?? documentIdFromCurrentDate();
-        final desp = Desp(
+        final id = widget.ganho?.id ?? documentIdFromCurrentDate();
+        final ganho = Ganho(
             id: id,
             categoria: _category,
             data: data,
             nome: _name,
             valor: _value);
-        await widget.database.setDesp(desp);
+        await widget.database.setGanho(ganho);
         Navigator.of(context).pop();
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
@@ -90,7 +90,7 @@ class _DespesasScreenState extends State<DespesasScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
-        title: Text(widget.desp == null ? 'Nova Despesa' : 'Edite Despesa'),
+        title: Text(widget.ganho == null ? 'Novo Ganho' : 'Edite Ganho'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -160,14 +160,14 @@ class _DespesasScreenState extends State<DespesasScreen> {
                         height: 20,
                       ),
                       Container(
-                        height: totalHeight * 0.52,
+                        height: totalHeight * 0.32,
                         child: GridView.count(
                           primary: false,
                           padding: EdgeInsets.symmetric(vertical: 8),
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 16,
                           crossAxisCount: 3,
-                          children: _categoryIconService.expenseList
+                          children: _categoryIconService.incomeList
                               .map((category) => InkWell(
                                     onTap: () {
                                       setState(() {
