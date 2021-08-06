@@ -31,7 +31,7 @@ class BalanceScreen extends StatefulWidget {
 
 class _BalanceScreenState extends State<BalanceScreen> {
   final CategoryIconService _categoryIconService = CategoryIconService();
-  List<GDPData> _chartData = [];
+  List<CategoryData> _chartData = [];
   TooltipBehavior _tooltipBehavior;
 
   @override
@@ -44,10 +44,14 @@ class _BalanceScreenState extends State<BalanceScreen> {
   @override
   Widget build(BuildContext context) {
     double totalWidth = Utils.totalWidth(context: context);
+    double totalHeight = Utils.totalHeight(context: context);
     return Scaffold(
       appBar: AppBar(
-        // title: title,
-        // centerTitle: true,
+        title: Text(
+          'Despesas',
+          style: TextStyle(color: kColorDarkPurple),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: InkWell(
             splashColor: Colors.transparent,
@@ -55,7 +59,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
             onTap: () => Navigator.of(context).pop(false),
             child: Icon(
               Icons.chevron_left,
-              color: kColorPurple,
+              color: kColorDarkPurple,
               size: 32,
             )),
         elevation: 0,
@@ -93,37 +97,42 @@ class _BalanceScreenState extends State<BalanceScreen> {
                         padding: EdgeInsets.all(8),
                         // height: 50,
                         width: totalWidth,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              child: ClipOval(
-                                  child: Container(
-                                color: color,
-                                child: Icon(
-                                  icon,
-                                  size: 20,
-                                ),
-                              )),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: Text(des.nome),
-                            ),
-                            Container(
-                              child:
-                                  Text('-R\$ ${des.valor.toStringAsFixed(2)}'),
-                            ),
-                          ],
+                        child: InkWell(
+                          onTap: () {
+                            print('Cliquei');
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                height: 40,
+                                width: 40,
+                                child: ClipOval(
+                                    child: Container(
+                                  color: color,
+                                  child: Icon(
+                                    icon,
+                                    size: 20,
+                                  ),
+                                )),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(des.nome),
+                              ),
+                              Container(
+                                child: Text(
+                                    '-R\$ ${des.valor.toStringAsFixed(2)}'),
+                              ),
+                            ],
+                          ),
                         ),
                       ));
                     }
                   });
                   _categoryIconService.expenseList.forEach((element) {
-                    _chartData.add(GDPData(
+                    _chartData.add(CategoryData(
                       element.name,
                       amount.elementAt(element.index).round(),
                       element.color,
@@ -134,22 +143,24 @@ class _BalanceScreenState extends State<BalanceScreen> {
                     children: [
                       SfCircularChart(
                           legend: Legend(
-                              isVisible: true,
+                              isVisible: false,
                               overflowMode: LegendItemOverflowMode.scroll),
                           tooltipBehavior: _tooltipBehavior,
                           series: <CircularSeries>[
-                            PieSeries<GDPData, String>(
+                            PieSeries<CategoryData, String>(
                               dataSource: _chartData,
-                              pointColorMapper: (GDPData data, _) => data.color,
-                              xValueMapper: (GDPData data, _) => data.nome,
-                              yValueMapper: (GDPData data, _) => data.amount,
+                              pointColorMapper: (CategoryData data, _) =>
+                                  data.color,
+                              xValueMapper: (CategoryData data, _) => data.nome,
+                              yValueMapper: (CategoryData data, _) =>
+                                  data.amount,
                               dataLabelSettings:
                                   DataLabelSettings(isVisible: false),
                               enableTooltip: true,
                             )
                           ]),
                       Container(
-                        height: 300,
+                        height: totalHeight * 0.52,
                         child: ListView(
                           // children: children,
                           children: despesa,
@@ -169,22 +180,10 @@ class _BalanceScreenState extends State<BalanceScreen> {
       ),
     );
   }
-
-  // List<GDPData> getChartData() {
-  //   final List<GDPData> chartData = [
-  //     GDPData('Oceania', 1600),
-  //     GDPData('Africa', 2490),
-  //     GDPData('S America', 2900),
-  //     GDPData('Europe', 23050),
-  //     GDPData('N America', 24880),
-  //     GDPData('Asia', 34390),
-  //   ];
-  //   return chartData;
-  // }
 }
 
-class GDPData {
-  GDPData(this.nome, this.amount, this.color);
+class CategoryData {
+  CategoryData(this.nome, this.amount, this.color);
   final String nome;
   final int amount;
   final Color color;
