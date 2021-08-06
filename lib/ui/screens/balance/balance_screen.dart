@@ -46,7 +46,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
 
   Future<void> _delete(BuildContext context, Desp desp) async {
     try {
-      await widget.database.deleteJob(desp);
+      await widget.database.deleteDesp(desp);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
