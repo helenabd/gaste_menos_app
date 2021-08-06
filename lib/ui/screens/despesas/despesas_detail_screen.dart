@@ -10,11 +10,11 @@ import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class BalanceScreen extends StatefulWidget {
+class DespesasDetailScreen extends StatefulWidget {
   final Database database;
   final int month;
 
-  const BalanceScreen({
+  const DespesasDetailScreen({
     Key key,
     @required this.database,
     @required this.month,
@@ -23,16 +23,17 @@ class BalanceScreen extends StatefulWidget {
   static Future<void> show(BuildContext context, int month) async {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => BalanceScreen(database: database, month: month),
+      builder: (context) =>
+          DespesasDetailScreen(database: database, month: month),
       fullscreenDialog: true,
     ));
   }
 
   @override
-  _BalanceScreenState createState() => _BalanceScreenState();
+  _DespesasDetailScreenState createState() => _DespesasDetailScreenState();
 }
 
-class _BalanceScreenState extends State<BalanceScreen> {
+class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
   final CategoryIconService _categoryIconService = CategoryIconService();
   List<CategoryData> _chartData = [];
   TooltipBehavior _tooltipBehavior;

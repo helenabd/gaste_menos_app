@@ -163,8 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Text(
                                                   'R\$ ${(totalDesp == null) ? 0.toStringAsFixed(2) : totalDesp.toStringAsFixed(2)}'),
                                               InkWell(
-                                                onTap: () => BalanceScreen.show(
-                                                    context, _date.month),
+                                                onTap: () =>
+                                                    DespesasDetailScreen.show(
+                                                        context, _date.month),
                                                 child: Text('detalhes'),
                                               ),
                                             ],
