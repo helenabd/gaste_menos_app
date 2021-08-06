@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
+import 'package:gaste_menos_app/ui/design/design.dart';
 import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
+import 'package:gaste_menos_app/ui/screens/login/components/logo.dart';
 import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/cupertino_picker_extended.dart' as CupertinoExtended;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -48,24 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
     balanco = 0.0;
   }
 
-  // Future<void> _createDesp(BuildContext context) async {
-  //   try {
-  //     final database = Provider.of<Database>(context, listen: false);
-  //     await database.createDesp(Desp(
-  //       categoria: 'Supermercado',
-  //       data: DateTime.now(),
-  //       nome: 'Brasil',
-  //       valor: 23.45,
-  //     ));
-  //   } on FirebaseException catch (e) {
-  //     showExceptionAlertDialog(
-  //       context,
-  //       title: 'Operação falha',
-  //       exception: e,
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
@@ -86,6 +69,25 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime dateTime = DateTime.now();
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: InkWell(
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  color: kColorPurple,
+                  fontSize: 18,
+                ),
+              ),
+              onTap: () => _confirmSignOut(context),
+            ),
+          ),
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SafeArea(
           minimum: EdgeInsets.symmetric(horizontal: 16),
           child: Center(
@@ -93,19 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  InkWell(
-                    child: Text('Logout'),
-                    onTap: () => _confirmSignOut(context),
-                  ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: [
-                  //     Avatar(),
-                  //     Avatar(),
-                  //     Avatar(),
-                  //     Avatar(),
-                  //   ],
-                  // ),
+                  Logo(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -117,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: InkWell(
                           child: Text(
                               '${monthList.elementAt(dateTime.month - 1).toString()}/${dateTime.year}'),
-                          onTap: () => DatePicker(),
+                          onTap: () {},
                         ),
                       ),
                       InkWell(
@@ -135,17 +125,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           balanco = 0.0;
                           if (snapshot.hasData) {
                             final desp = snapshot.data;
-                            List<Widget> despesa = [];
                             desp.forEach((des) {
                               if (des.data.month == 8) {
                                 (totalDesp == null)
                                     ? totalDesp = des.valor
                                     : totalDesp += des.valor;
-                                despesa.add(Container(
-                                  padding: EdgeInsets.all(8),
-                                  color: Colors.red,
-                                  child: Text(des.nome),
-                                ));
                               }
                             });
                             (totalGanho == null)
@@ -154,17 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             return Column(
                               children: [
-                                /*Container(
-                                  height: 80,
-                                  child: ListView(
-                                    // children: children,
-                                    children: despesa,
-                                  ),
-                                ),*/
                                 Container(
                                   padding: EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    // color: Colors.purple,
                                     border: Border.all(),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -229,48 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Center(child: CircularProgressIndicator());
                         }),
                   ),
-
-                  /*Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      // color: Colors.purple,
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: InkWell(
-                      child: Container(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Metas'),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Curto Prazo: '),
-                                  Text('R\$ XXXX')
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Longo Prazo: '),
-                                  Text('R\$ XXXX')
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),*/
                   Container(
                     height: 60,
                     width: 60,
@@ -280,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: InkWell(
                             onTap: () => DespesasScreen.show(context,
                                 database: database),
-                            // onTap: () => _startAddNewTransaction(context),
                             child: Icon(
                               Icons.add,
                               color: Colors.white,
@@ -293,80 +226,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           )),
-      /*bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.purple,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home')
-        ],
-      ),*/
-    );
-  }
-
-  void _startAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return GestureDetector(
-          onTap: () {},
-          child: NewTransaction(),
-          behavior: HitTestBehavior.opaque,
-        );
-      },
     );
   }
 }
-
-class DatePicker extends StatefulWidget {
-  const DatePicker({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _DatePickerState createState() => _DatePickerState();
-}
-
-class _DatePickerState extends State<DatePicker> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      child: CupertinoExtended.CupertinoDatePicker(
-        initialDateTime: DateTime.now(),
-        onDateTimeChanged: (date) {
-          setState(() {
-            // dateTime = date;
-            //   widget.presenter.validatePicker(dateTime);
-          });
-        },
-        minimumYear: 1950,
-        maximumYear: DateTime.now().year,
-        use24hFormat: true,
-        mode: CupertinoExtended.CupertinoDatePickerMode.date,
-      ),
-    );
-  }
-}
-
-/*class Avatar extends StatelessWidget {
-  const Avatar({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      child: ClipOval(
-        child: Material(
-          child: InkWell(
-            child: Image.asset(
-              Images.kUrso,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}*/
