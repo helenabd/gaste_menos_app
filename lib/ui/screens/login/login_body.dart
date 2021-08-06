@@ -53,8 +53,12 @@ class _LoginBodyState extends State<LoginBody> {
   Future<void> _submit() async {
     try {
       await widget.bloc.submit();
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => HomeScreen()));
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => Provider<Database>(
+                create: (_) => FirestoreDatabase(uid: auth.currentUser.uid),
+                child: HomeScreen(),
+              )));
     } on FirebaseAuthException catch (e) {
       showExceptionAlertDialog(
         context,
