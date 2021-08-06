@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
-import 'package:gaste_menos_app/ui/design/design.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 
 class DateTimePicker extends StatelessWidget {

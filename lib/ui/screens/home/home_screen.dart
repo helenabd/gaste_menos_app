@@ -1,8 +1,6 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
-import 'package:gaste_menos_app/ui/design/images.dart';
 import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
 import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';

@@ -5,6 +5,7 @@ import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BalanceScreen extends StatefulWidget {
   final Database database;
@@ -30,6 +31,15 @@ class BalanceScreen extends StatefulWidget {
 
 class _BalanceScreenState extends State<BalanceScreen> {
   final CategoryIconService _categoryIconService = CategoryIconService();
+  List<GDPData> _chartData = [];
+  TooltipBehavior _tooltipBehavior;
+
+  @override
+  void initState() {
+    // _chartData = getChartData();
+    _tooltipBehavior = TooltipBehavior(enable: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +86,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                           amount[element.index] += des.valor;
                         }
                       });
-                      print(amount.toString());
+                      // print(amount.toString());
 
                       despesa.add(Container(
                         // color: Colors.red,
@@ -112,14 +122,34 @@ class _BalanceScreenState extends State<BalanceScreen> {
                       ));
                     }
                   });
+                  _categoryIconService.expenseList.forEach((element) {
+                    _chartData.add(GDPData(
+                      element.name,
+                      amount.elementAt(element.index).round(),
+                      element.color,
+                    ));
+                  });
 
                   return Column(
                     children: [
+                      SfCircularChart(
+                          legend: Legend(
+                              isVisible: true,
+                              overflowMode: LegendItemOverflowMode.scroll),
+                          tooltipBehavior: _tooltipBehavior,
+                          series: <CircularSeries>[
+                            PieSeries<GDPData, String>(
+                              dataSource: _chartData,
+                              pointColorMapper: (GDPData data, _) => data.color,
+                              xValueMapper: (GDPData data, _) => data.nome,
+                              yValueMapper: (GDPData data, _) => data.amount,
+                              dataLabelSettings:
+                                  DataLabelSettings(isVisible: false),
+                              enableTooltip: true,
+                            )
+                          ]),
                       Container(
-                        child: Text('Gráfico'),
-                      ),
-                      Container(
-                        height: 160,
+                        height: 300,
                         child: ListView(
                           // children: children,
                           children: despesa,
@@ -139,4 +169,23 @@ class _BalanceScreenState extends State<BalanceScreen> {
       ),
     );
   }
+
+  // List<GDPData> getChartData() {
+  //   final List<GDPData> chartData = [
+  //     GDPData('Oceania', 1600),
+  //     GDPData('Africa', 2490),
+  //     GDPData('S America', 2900),
+  //     GDPData('Europe', 23050),
+  //     GDPData('N America', 24880),
+  //     GDPData('Asia', 34390),
+  //   ];
+  //   return chartData;
+  // }
+}
+
+class GDPData {
+  GDPData(this.nome, this.amount, this.color);
+  final String nome;
+  final int amount;
+  final Color color;
 }
