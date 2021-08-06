@@ -7,6 +7,7 @@ import 'package:gaste_menos_app/services/services.dart';
 abstract class Database {
   Future<void> setDesp(Desp desp);
   Stream<List<Desp>> despStream();
+  Future<void> deleteJob(Desp desp);
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
@@ -18,12 +19,18 @@ class FirestoreDatabase implements Database {
     @required this.uid,
   }) : assert(uid != null);
 
+  @override
   Future<void> setDesp(Desp desp) => _service.setData(
         path: APIPath.desp(uid, desp.id),
         data: desp.toMap(),
       );
 
+  @override
   Stream<List<Desp>> despStream() => _service.collectionsStrem(
       path: APIPath.despesas(uid),
       builder: (data, documentId) => Desp.fromMap(data, documentId));
+
+  @override
+  Future<void> deleteJob(Desp desp) =>
+      _service.deleteData(path: APIPath.desp(uid, desp.id));
 }

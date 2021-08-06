@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
@@ -5,6 +6,7 @@ import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
 import 'package:gaste_menos_app/ui/screens/screens.dart';
+import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -37,9 +39,21 @@ class _BalanceScreenState extends State<BalanceScreen> {
 
   @override
   void initState() {
-    // _chartData = getChartData();
+    _chartData = [];
     _tooltipBehavior = TooltipBehavior(enable: true);
     super.initState();
+  }
+
+  Future<void> _delete(BuildContext context, Desp desp) async {
+    try {
+      await widget.database.deleteJob(desp);
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Operation failed',
+        exception: e,
+      );
+    }
   }
 
   @override
@@ -93,44 +107,51 @@ class _BalanceScreenState extends State<BalanceScreen> {
                       });
                       // print(amount.toString());
 
-                      despesa.add(Container(
-                        // color: Colors.red,
-                        padding: EdgeInsets.all(8),
-                        // height: 50,
-                        width: totalWidth,
-                        child: InkWell(
-                          onTap: () => DespesasScreen.show(context,
-                              desp: des, database: widget.database),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 40,
-                                child: ClipOval(
-                                    child: Container(
-                                  color: color,
-                                  child: Icon(
-                                    icon,
-                                    size: 20,
-                                  ),
-                                )),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(8),
-                                child: Text(des.nome),
-                              ),
-                              Container(
-                                child: Text(
-                                    '-R\$ ${des.valor.toStringAsFixed(2)}'),
-                              ),
-                            ],
+                      despesa.add(Dismissible(
+                        key: Key('desp-${des.id}'),
+                        background: Container(color: Colors.red),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) => _delete(context, des),
+                        child: Container(
+                          // color: Colors.red,
+                          padding: EdgeInsets.all(8),
+                          // height: 50,
+                          width: totalWidth,
+                          child: InkWell(
+                            onTap: () => DespesasScreen.show(context,
+                                desp: des, database: widget.database),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  child: ClipOval(
+                                      child: Container(
+                                    color: color,
+                                    child: Icon(
+                                      icon,
+                                      size: 20,
+                                    ),
+                                  )),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(des.nome),
+                                ),
+                                Container(
+                                  child: Text(
+                                      '-R\$ ${des.valor.toStringAsFixed(2)}'),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ));
                     }
                   });
+                  _chartData = [];
                   _categoryIconService.expenseList.forEach((element) {
                     _chartData.add(CategoryData(
                       element.name,

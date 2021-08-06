@@ -13,6 +13,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  double totalDesp;
+  double totalGanho;
+  double balanco;
+
   Future<void> _signOut(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
@@ -34,6 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (didRequestSignOut == true) {
       _signOut(context);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    totalDesp = 0.0;
+    totalGanho = 0.0;
+    balanco = 0.0;
   }
 
   // Future<void> _createDesp(BuildContext context) async {
@@ -72,9 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'Dez'
     ];
     DateTime dateTime = DateTime.now();
-    var totalDesp = 0.0;
-    var totalGanho = 0.0;
-    var balanco = 0.0;
+
     return Scaffold(
       body: SafeArea(
           minimum: EdgeInsets.symmetric(horizontal: 16),
@@ -120,12 +130,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: StreamBuilder<List<Desp>>(
                         stream: database.despStream(),
                         builder: (context, snapshot) {
+                          totalDesp = 0.0;
+                          totalGanho = 0.0;
+                          balanco = 0.0;
                           if (snapshot.hasData) {
                             final desp = snapshot.data;
                             List<Widget> despesa = [];
                             desp.forEach((des) {
                               if (des.data.month == 8) {
-                                totalDesp += des.valor;
+                                (totalDesp == null)
+                                    ? totalDesp = des.valor
+                                    : totalDesp += des.valor;
                                 despesa.add(Container(
                                   padding: EdgeInsets.all(8),
                                   color: Colors.red,
@@ -133,7 +148,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ));
                               }
                             });
-                            balanco = totalGanho - totalDesp;
+                            (totalGanho == null)
+                                ? balanco = 0 - totalDesp
+                                : balanco = totalGanho - totalDesp;
 
                             return Column(
                               children: [
@@ -179,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       Icon(Icons
                                                           .add_circle_outline),
                                                       Text(
-                                                          'R\$ ${totalGanho.toStringAsFixed(2)}')
+                                                          'R\$ ${(totalGanho == null) ? 0.toStringAsFixed(2) : totalGanho.toStringAsFixed(2)}')
                                                     ],
                                                   ),
                                                 ),
@@ -189,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       Icon(Icons
                                                           .remove_circle_outline),
                                                       Text(
-                                                          'R\$ ${totalDesp.toStringAsFixed(2)}')
+                                                          'R\$ ${(totalDesp == null) ? 0.toStringAsFixed(2) : totalDesp.toStringAsFixed(2)}')
                                                     ],
                                                   ),
                                                 )
@@ -261,7 +278,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Material(
                         color: Colors.purple,
                         child: InkWell(
-                            onTap: () => DespesasScreen.show(context),
+                            onTap: () => DespesasScreen.show(context,
+                                database: database),
                             // onTap: () => _startAddNewTransaction(context),
                             child: Icon(
                               Icons.add,
