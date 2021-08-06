@@ -147,7 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Text(
                                                   'R\$ ${(totalGanho == null) ? 0.toStringAsFixed(2) : totalGanho.toStringAsFixed(2)}'),
                                               InkWell(
-                                                  onTap: () {},
+                                                  onTap: () =>
+                                                      GanhosDetailScreen.show(
+                                                          context, _date.month),
                                                   child: Text('detalhes')),
                                             ],
                                           ),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
+import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
 
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
@@ -9,11 +10,11 @@ import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DespesasDetailScreen extends StatefulWidget {
+class GanhosDetailScreen extends StatefulWidget {
   final Database database;
   final int month;
 
-  const DespesasDetailScreen({
+  const GanhosDetailScreen({
     Key key,
     @required this.database,
     @required this.month,
@@ -23,16 +24,16 @@ class DespesasDetailScreen extends StatefulWidget {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
-          DespesasDetailScreen(database: database, month: month),
+          GanhosDetailScreen(database: database, month: month),
       fullscreenDialog: true,
     ));
   }
 
   @override
-  _DespesasDetailScreenState createState() => _DespesasDetailScreenState();
+  _GanhosDetailScreenState createState() => _GanhosDetailScreenState();
 }
 
-class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
+class _GanhosDetailScreenState extends State<GanhosDetailScreen> {
   final CategoryIconService _categoryIconService = CategoryIconService();
   List<CategoryData> _chartData = [];
   TooltipBehavior _tooltipBehavior;
@@ -44,9 +45,9 @@ class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
     super.initState();
   }
 
-  Future<void> _delete(BuildContext context, Desp desp) async {
+  Future<void> _delete(BuildContext context, Ganho ganho) async {
     try {
-      await widget.database.deleteDesp(desp);
+      await widget.database.deleteGanho(ganho);
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
@@ -63,7 +64,7 @@ class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Despesas',
+          'Ganhos',
           style: TextStyle(color: kColorDarkPurple),
         ),
         centerTitle: true,
@@ -82,44 +83,44 @@ class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
       body: SafeArea(
         minimum: EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
-          child: StreamBuilder<List<Desp>>(
-              stream: widget.database.despStream(),
+          child: StreamBuilder<List<Ganho>>(
+              stream: widget.database.ganhoStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final desp = snapshot.data;
+                  final ganhos = snapshot.data;
                   List<Widget> despesa = [];
                   List amount = [];
                   for (int i = 0;
-                      i < _categoryIconService.expenseList.length;
+                      i < _categoryIconService.incomeList.length;
                       i++) {
                     amount.add(0);
                   }
-                  desp.forEach((des) {
-                    if (des.data.month == widget.month) {
+                  ganhos.forEach((ganho) {
+                    if (ganho.data.month == widget.month) {
                       var icon;
                       var color;
-                      _categoryIconService.expenseList.forEach((element) {
-                        if (element.name == des.categoria) {
+                      _categoryIconService.incomeList.forEach((element) {
+                        if (element.name == ganho.categoria) {
                           icon = element.icon;
                           color = element.color;
-                          amount[element.index] += des.valor;
+                          amount[element.index] += ganho.valor;
                         }
                       });
                       // print(amount.toString());
 
                       despesa.add(Dismissible(
-                        key: Key('desp-${des.id}'),
+                        key: Key('ganho-${ganho.id}'),
                         background: Container(color: Colors.red),
                         direction: DismissDirection.endToStart,
-                        onDismissed: (direction) => _delete(context, des),
+                        onDismissed: (direction) => _delete(context, ganho),
                         child: Container(
                           // color: Colors.red,
                           padding: EdgeInsets.all(8),
                           // height: 50,
                           width: totalWidth,
                           child: InkWell(
-                            onTap: () => DespesasScreen.show(context,
-                                desp: des, database: widget.database),
+                            onTap: () => GanhosScreen.show(context,
+                                ganho: ganho, database: widget.database),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -138,11 +139,11 @@ class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
                                 ),
                                 Container(
                                   padding: EdgeInsets.all(8),
-                                  child: Text(des.nome),
+                                  child: Text(ganho.nome),
                                 ),
                                 Container(
                                   child: Text(
-                                      '-R\$ ${des.valor.toStringAsFixed(2)}'),
+                                      '+R\$ ${ganho.valor.toStringAsFixed(2)}'),
                                 ),
                               ],
                             ),
@@ -152,7 +153,7 @@ class _DespesasDetailScreenState extends State<DespesasDetailScreen> {
                     }
                   });
                   _chartData = [];
-                  _categoryIconService.expenseList.forEach((element) {
+                  _categoryIconService.incomeList.forEach((element) {
                     _chartData.add(CategoryData(
                       element.name,
                       amount.elementAt(element.index).round(),
