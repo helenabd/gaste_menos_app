@@ -90,10 +90,6 @@ class _LoginBodyState extends State<LoginBody> {
             children: [
               Spacer(flex: 6),
               Logo(),
-              SizedBox(
-                height: 20,
-              ),
-              LoginTitle(),
               Spacer(flex: 3),
               UsernameField(
                 controller: _emailController,
@@ -117,7 +113,14 @@ class _LoginBodyState extends State<LoginBody> {
               ),
               Spacer(flex: 3),
               TextButton(
-                child: Text(model.secundaryButtonText),
+                child: Text(
+                  model.secundaryButtonText,
+                  style: TextStyle(
+                    color: kColorDarkPurple,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 onPressed: !model.isLoading ? _toggleFormType : null,
               ),
               Spacer(flex: 16),
