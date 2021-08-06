@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,16 +10,21 @@ import 'package:gaste_menos_app/ui/widgets/widgets.dart';
 
 class DespesasScreen extends StatefulWidget {
   final Database database;
+  final Desp desp;
 
   const DespesasScreen({
     Key key,
     @required this.database,
+    this.desp,
   }) : super(key: key);
 
-  static Future<void> show(BuildContext context) async {
-    final database = Provider.of<Database>(context, listen: false);
+  static Future<void> show(BuildContext context,
+      {Database database, Desp desp}) async {
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DespesasScreen(database: database),
+      builder: (context) => DespesasScreen(
+        database: database,
+        desp: desp,
+      ),
       fullscreenDialog: true,
     ));
   }
@@ -41,6 +47,12 @@ class _DespesasScreenState extends State<DespesasScreen> {
     super.initState();
     final start = DateTime.now();
     _date = DateTime(start.year, start.month, start.day);
+    if (widget.desp != null) {
+      _name = widget.desp.nome;
+      _category = widget.desp.categoria;
+      _date = widget.desp.data;
+      _value = widget.desp.valor;
+    }
   }
 
   bool _validateAndSaveForm() {
@@ -54,12 +66,22 @@ class _DespesasScreenState extends State<DespesasScreen> {
 
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
-      final data = DateTime(
-          _date.year, _date.month, _date.day, _date.hour, _date.minute);
-      final desp =
-          Desp(categoria: _category, data: data, nome: _name, valor: _value);
-      await widget.database.createDesp(desp);
-      Navigator.of(context).pop();
+      try {
+        final data = DateTime(
+            _date.year, _date.month, _date.day, _date.hour, _date.minute);
+        final id = widget.desp?.id ?? documentIdFromCurrentDate();
+        final desp = Desp(
+            id: id,
+            categoria: _category,
+            data: data,
+            nome: _name,
+            valor: _value);
+        await widget.database.setDesp(desp);
+        Navigator.of(context).pop();
+      } on FirebaseException catch (e) {
+        showExceptionAlertDialog(context,
+            title: 'Operação falhou', exception: e);
+      }
     }
   }
 
@@ -69,7 +91,7 @@ class _DespesasScreenState extends State<DespesasScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
-        title: Text('Nova Despesa'),
+        title: Text(widget.desp == null ? 'Nova Despesa' : 'Edite Despesa'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -97,6 +119,7 @@ class _DespesasScreenState extends State<DespesasScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TextFormField(
+                        initialValue: _name,
                         decoration: InputDecoration(labelText: 'Descrição'),
                         validator: (value) => value.isNotEmpty
                             ? null
@@ -108,6 +131,7 @@ class _DespesasScreenState extends State<DespesasScreen> {
                         children: [
                           Expanded(
                             child: TextFormField(
+                              initialValue: _value.toString(),
                               decoration: InputDecoration(labelText: 'Valor'),
                               onSaved: (newValue) =>
                                   _value = double.tryParse(newValue) ?? 0,

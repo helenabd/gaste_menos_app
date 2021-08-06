@@ -4,6 +4,7 @@ import 'package:gaste_menos_app/domain/entities/category_icon_service.dart';
 
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
+import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -98,9 +99,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
                         // height: 50,
                         width: totalWidth,
                         child: InkWell(
-                          onTap: () {
-                            print('Cliquei');
-                          },
+                          onTap: () => DespesasScreen.show(context,
+                              desp: des, database: widget.database),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
