@@ -132,7 +132,8 @@ class _DespesasScreenState extends State<DespesasScreen> {
                         children: [
                           Expanded(
                             child: TextFormField(
-                              initialValue: _value.toString(),
+                              initialValue:
+                                  (_value == null) ? null : _value.toString(),
                               decoration: InputDecoration(labelText: 'Valor'),
                               onSaved: (newValue) =>
                                   _value = double.tryParse(newValue) ?? 0,

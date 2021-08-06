@@ -7,5 +7,6 @@ ThemeData gasteMenosTheme() {
     secondaryHeaderColor: kColorDarkBlue,
     scaffoldBackgroundColor: Colors.white,
     fontFamily: kFontFamilyBrand,
+    accentColor: kColorPurple,
   );
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gaste_menos_app/domain/domain.dart';
 import 'package:gaste_menos_app/services/services.dart';
 import 'package:gaste_menos_app/ui/design/design.dart';
-import 'package:gaste_menos_app/ui/screens/home/new_transaction.dart';
 import 'package:gaste_menos_app/ui/screens/login/components/logo.dart';
 import 'package:gaste_menos_app/ui/screens/screens.dart';
 import 'package:gaste_menos_app/ui/widgets/widgets.dart';
@@ -17,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double totalDesp;
   double totalGanho;
   double balanco;
+  DateTime _date;
 
   Future<void> _signOut(BuildContext context) async {
     try {
@@ -43,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    final start = DateTime.now();
+    _date = DateTime(start.year, start.month, start.day);
     super.initState();
     totalDesp = 0.0;
     totalGanho = 0.0;
@@ -52,21 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    List monthList = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Maio',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez'
-    ];
-    DateTime dateTime = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -99,19 +86,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      InkWell(
-                        child: Icon(Icons.arrow_back_ios),
-                        onTap: () => print('Cliquei aqui'),
-                      ),
-                      Container(
-                        child: InkWell(
-                          child: Text(
-                              '${monthList.elementAt(dateTime.month - 1).toString()}/${dateTime.year}'),
-                          onTap: () {},
+                      Expanded(
+                        child: MonthDatePicker(
+                          labelText: 'Data',
+                          selectedDate: _date,
+                          selectDate: (date) => setState(() => _date = date),
                         ),
-                      ),
-                      InkWell(
-                        child: Icon(Icons.arrow_forward_ios),
                       ),
                     ],
                   ),
@@ -126,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (snapshot.hasData) {
                             final desp = snapshot.data;
                             desp.forEach((des) {
-                              if (des.data.month == 8) {
+                              if (des.data.month == _date.month) {
                                 (totalDesp == null)
                                     ? totalDesp = des.valor
                                     : totalDesp += des.valor;
@@ -144,53 +124,52 @@ class _HomeScreenState extends State<HomeScreen> {
                                     border: Border.all(),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: InkWell(
-                                    onTap: () => BalanceScreen.show(context, 8),
-                                    child: Container(
-                                      height: 160,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Balanço'),
-                                          Text(
-                                              'R\$ ${balanco.toStringAsFixed(2)}'),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 16.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .add_circle_outline),
-                                                      Text(
-                                                          'R\$ ${(totalGanho == null) ? 0.toStringAsFixed(2) : totalGanho.toStringAsFixed(2)}')
-                                                    ],
-                                                  ),
-                                                ),
-                                                Container(
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .remove_circle_outline),
-                                                      Text(
-                                                          'R\$ ${(totalDesp == null) ? 0.toStringAsFixed(2) : totalDesp.toStringAsFixed(2)}')
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                  child: Container(
+                                    height: 160,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Balanço'),
+                                        Text(
+                                            'R\$ ${balanco.toStringAsFixed(2)}'),
+                                        Text('Entradas'),
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Icon(Icons.add_circle_outline),
+                                              Text(
+                                                  'R\$ ${(totalGanho == null) ? 0.toStringAsFixed(2) : totalGanho.toStringAsFixed(2)}'),
+                                              InkWell(
+                                                  onTap: () {},
+                                                  child: Text('detalhes')),
+                                            ],
+                                          ),
+                                        ),
+                                        Text('Despesas'),
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Icon(Icons
+                                              //     .remove_circle_outline),
+                                              Text(
+                                                  'R\$ ${(totalDesp == null) ? 0.toStringAsFixed(2) : totalDesp.toStringAsFixed(2)}'),
+                                              InkWell(
+                                                onTap: () => BalanceScreen.show(
+                                                    context, _date.month),
+                                                child: Text('detalhes'),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -205,22 +184,43 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Center(child: CircularProgressIndicator());
                         }),
                   ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: ClipOval(
-                      child: Material(
-                        color: Colors.purple,
-                        child: InkWell(
-                            onTap: () => DespesasScreen.show(context,
-                                database: database),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 42,
-                            )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 60,
+                        width: 60,
+                        child: ClipOval(
+                          child: Material(
+                            color: Colors.purple,
+                            child: InkWell(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 42,
+                                )),
+                          ),
+                        ),
                       ),
-                    ),
+                      Container(
+                        height: 60,
+                        width: 60,
+                        child: ClipOval(
+                          child: Material(
+                            color: Colors.purple,
+                            child: InkWell(
+                                onTap: () => DespesasScreen.show(context,
+                                    database: database),
+                                child: Icon(
+                                  Icons.remove,
+                                  color: Colors.white,
+                                  size: 42,
+                                )),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

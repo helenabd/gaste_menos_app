@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
   font_awesome_flutter: ^8.8.1
   syncfusion_flutter_charts:
+  month_picker_dialog:
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
+  static List monthList = [
+    'Jan',
+    'Fev',
+    'Mar',
+    'Abr',
+    'Maio',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Set',
+    'Out',
+    'Nov',
+    'Dez'
+  ];
+
   static double totalHeight({BuildContext context}) {
     return MediaQuery.of(context).size.height;
   }
@@ -19,6 +34,12 @@ class Utils {
 
   static String date(DateTime date) {
     return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  static String monthDate(DateTime date) {
+    // return DateFormat('MM/yyyy').format(date);
+    String month = monthList.elementAt(date.month - 1);
+    return '$month/${date.year}';
   }
 
   static String dayOfWeek(DateTime date) {
