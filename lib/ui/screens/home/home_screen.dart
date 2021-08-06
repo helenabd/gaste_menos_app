@@ -96,13 +96,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
+                  StreamBuilder<List<Ganho>>(
+                      stream: database.ganhoStream(),
+                      builder: (context, snapshot) {
+                        totalGanho = 0.0;
+                        if (snapshot.hasData) {
+                          final ganhos = snapshot.data;
+                          ganhos.forEach((ganho) {
+                            if (ganho.data.month == _date.month) {
+                              (totalGanho == null)
+                                  ? totalGanho = ganho.valor
+                                  : totalGanho += ganho.valor;
+                            }
+                          });
+                        }
+                        return Container();
+                      }),
                   Container(
                     height: 300,
                     child: StreamBuilder<List<Desp>>(
                         stream: database.despStream(),
                         builder: (context, snapshot) {
                           totalDesp = 0.0;
-                          totalGanho = 0.0;
                           balanco = 0.0;
                           if (snapshot.hasData) {
                             final desp = snapshot.data;
